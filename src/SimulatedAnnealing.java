@@ -3,66 +3,66 @@ import java.util.Random;
 /**
  * Created by Jeff on 29/05/2015.
  */
-public class SimulatedAnnealing
+public class SimulatedAnnealing<T>
 {
-	private Random _randomiser;
-
-	private int _temp;
+	private float _temp;
 
 	private int _maxTime;
-	private int _maxTemp;
-	private int _tempDelta;
+	private float _maxTemp;
 	private int _numSamples;
+	private int _initSamples;
 
-	private Problem _problem;
+	private Problem<T> _problem;
 
-	public SimulatedAnnealing(int maxTemp, int tempDelta, int numSamples, int maxTime, Problem problem)
+	public SimulatedAnnealing(float maxTemp, int numSamples, int initialSamples, int maxTime, Problem<T> problem)
 	{
 		_maxTemp = maxTemp;
 		_maxTime = maxTime;
 		_numSamples = numSamples;
-		_tempDelta = tempDelta;
 		_problem = problem;
+		_initSamples = initialSamples;
 
 
 	}
 
-	public int run()
+	public T run()
 	{
-		int sample = randomise();
+		_temp = _maxTemp;
+
+		T sample = randomise();
+		double bestResult = _problem.evaluate(sample);
 
 		while(_temp > 0)
 		{
-			double bestResult = 0;
-
-			for(int i = 0; i < _numSamples; i++)
+			for(int i = 1; i < _numSamples; i++)
 			{
-				int test = _problem.permute(sample);
-				for(int j = 1; j < _temp; j++)
-					test = _problem.permute(test);
+				T test = _problem.permute(sample, (int)_temp);
 
 				double eval = _problem.evaluate(test);
 				if(eval > bestResult)
 				{
+					System.err.println(eval - bestResult);
 					bestResult = eval;
 					sample = test;
 				}
 			}
 
-			_temp -= _tempDelta;
+			System.out.println("Best Result at Temp = " + _temp + " is: " + bestResult);
+			_temp = _problem.tempFunction(_temp);
+
 		}
 
 		return sample;
 	}
 
-	private int randomise()
+	private T randomise()
 	{
 		double bestResult = 0;
-		int bestSample = 0;
+		T bestSample = _problem.minimum();
 
-		for(int i = 0; i < _numSamples; i++)
+		for(int i = 0; i < _initSamples; i++)
 		{
-			int sample = _problem.generate();
+			T sample = _problem.generate();
 			double eval = _problem.evaluate(sample);
 			if(eval > bestResult)
 			{
@@ -70,12 +70,8 @@ public class SimulatedAnnealing
 				bestSample = sample;
 			}
 		}
-		return (bestSample == 0 ? randomise() : bestSample);
+
+		return (bestResult == 0 ? randomise() : bestSample);
 	}
 
-	private int evaluate()
-	{
-
-		return 0;
-	}
 }

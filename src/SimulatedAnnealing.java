@@ -1,7 +1,7 @@
 import java.util.Random;
 
 /**
- * Created by Jeff on 29/05/2015.
+ * Runs simulated annealing on a problem
  */
 public class SimulatedAnnealing<T>
 {
@@ -21,24 +21,31 @@ public class SimulatedAnnealing<T>
 		_numSamples = numSamples;
 		_problem = problem;
 		_initSamples = initialSamples;
-
-
 	}
 
+	// Runs the heuristic
 	public T run()
 	{
+		// Resets the temperature
 		_temp = _maxTemp;
 
+		// Gets a random sample
 		T sample = randomise();
+		// Stores the evaluated value of the best current solution
 		double bestResult = _problem.evaluate(sample);
 
+		// Repeat until the temperature is zero
 		while(_temp > 0)
 		{
-			for(int i = 1; i < _numSamples; i++)
+			// Generate a certain number of samples and store one if its better than the current best result
+			for(int i = 0; i < _numSamples; i++)
 			{
-				T test = _problem.permute(sample, (int)_temp);
+				// Permutes the problem _temp times
+				T test = _problem.permute(sample, (int)(_temp+1));
 
+				// Evaluates the permuted problem
 				double eval = _problem.evaluate(test);
+				// And if its better than the best, then store it
 				if(eval > bestResult)
 				{
 					System.err.println(eval - bestResult);
@@ -48,18 +55,23 @@ public class SimulatedAnnealing<T>
 			}
 
 			System.out.println("Best Result at Temp = " + _temp + " is: " + bestResult);
+			// Set the temp to the next
 			_temp = _problem.tempFunction(_temp);
 
 		}
 
+		// Returns the best sample generated
 		return sample;
 	}
 
+	// Generates some random samples and returns the best
 	private T randomise()
 	{
 		double bestResult = 0;
+		// Sets a minimum sample that anything is better than
 		T bestSample = _problem.minimum();
 
+		// Generates a certain number of samples, evaluates them, and if better than the current best, make it the current best
 		for(int i = 0; i < _initSamples; i++)
 		{
 			T sample = _problem.generate();
@@ -71,6 +83,7 @@ public class SimulatedAnnealing<T>
 			}
 		}
 
+		// If bad samples generated, then repeat until a useful one is generated
 		return (bestResult == 0 ? randomise() : bestSample);
 	}
 

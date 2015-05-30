@@ -1,5 +1,5 @@
 /**
- * Created by Jeff on 29/05/2015.
+ * Represents an item in the boat problem
  */
 public class Item
 {
@@ -19,11 +19,13 @@ public class Item
 	{
 	}
 
+	// Clones the item
 	public Item clone()
 	{
 		return new Item(volume, weight, cost, value);
 	}
 
+	// Adds another item to this
 	public void add(Item i2)
 	{
 		volume += i2.volume;
@@ -31,6 +33,8 @@ public class Item
 		cost += i2.cost;
 		value += i2.value;
 	}
+
+	// Subtracts another item from this
 	public void subtract(Item i2)
 	{
 		volume -= i2.volume;

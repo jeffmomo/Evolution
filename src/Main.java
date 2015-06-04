@@ -13,7 +13,7 @@ public class Main {
     {
 	    try
 	    {
-		    File f = new File("C:/Users/Jeff/IdeaProjects/Evolution/src/info");
+		    File f = new File("C:/Users/Jeff/IdeaProjects/Evolution/src/test");
 
 		    BufferedReader br = new BufferedReader(new FileReader(f));
 
@@ -29,34 +29,37 @@ public class Main {
 		    int numItems = items.size();
 
 
-		    BoatProblem bp = new BoatProblem(new Random(), 100, 100, 100, items.toArray(new Item[numItems]));
+		    BoatProblem bp = new BoatProblem(new Random(), 50, 50, 50, items.toArray(new Item[numItems]));
 
-		    SimulatedAnnealing<ValueObject> sa = new SimulatedAnnealing<ValueObject>(numItems / 5, numItems * numItems * 10, 1000, bp);
+		    SimulatedAnnealing<ValueObject> sa = new SimulatedAnnealing<ValueObject>(numItems / 5, 1000, 10000, bp);
 
 		    long startTime = new Date().getTime();
-		    for(int i = 0; i < 1; i++)
-		    {
-			    ValueObject solution = sa.run();
+
+		    ValueObject solution = sa.run();
 
 
-			    System.out.println("RESULTS");
-			    System.out.println("Res: " + bp.evaluate(solution));
+		    System.out.println("RESULTS");
+		    System.out.println("Res: " + bp.evaluate(solution));
 
 
-			    System.out.println(solution.value.volume);
-			    System.out.println(solution.value.weight);
-			    System.out.println(solution.value.cost);
-			    System.out.println(solution.value.value);
+		    System.out.println(solution.value.volume);
+		    System.out.println(solution.value.weight);
+		    System.out.println(solution.value.cost);
+		    System.out.println(solution.value.value);
 
-			    System.out.println(solution.data);
-		    }
-
+		    //System.out.println(solution.data);
 
 		    long endTime = new Date().getTime();
 
 		    double timeCost = (double)(endTime - startTime) / 1000;
 
 		    System.out.println("Total time cost: " + timeCost);
+
+//		    for(int g = 0; g < numItems; g++)
+//		    {
+//			    if(ValueObject.bitAt(solution.data, g))
+//				    System.out.println(g + 1);
+//		    }
 
 	    }
 	    catch(IOException e)

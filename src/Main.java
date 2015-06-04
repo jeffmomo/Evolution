@@ -3,6 +3,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Random;
 
 public class Main {
@@ -14,18 +16,22 @@ public class Main {
 		    File f = new File("C:/Users/Jeff/IdeaProjects/Evolution/src/info");
 
 		    BufferedReader br = new BufferedReader(new FileReader(f));
-		    int numItems = Integer.parseInt(br.readLine());
 
-		    Item[] items = new Item[numItems];
-		    for(int i = 0; i < numItems; i++)
+		    //Item[] items = new Item[numItems];
+		    List<Item> items = new LinkedList<Item>();
+		    String temp;
+		    while((temp = br.readLine()) != null)
 		    {
-			    String[] split = br.readLine().split(" ");
-			    items[i] = new Item(Integer.parseInt(split[0]), Integer.parseInt(split[1]), Integer.parseInt(split[2]), Integer.parseInt(split[3]));
+			    String[] split = temp.split(" ");
+			    items.add(new Item(Float.parseFloat(split[0]), Float.parseFloat(split[1]), Float.parseFloat(split[2]), Float.parseFloat(split[3])));
 		    }
 
-		    BoatProblem bp = new BoatProblem(new Random(), 100, 100, 100, items);
+		    int numItems = items.size();
 
-		    SimulatedAnnealing<ValueObject> sa = new SimulatedAnnealing<ValueObject>(numItems / 5, numItems * 1000, 1000, 1000, bp);
+
+		    BoatProblem bp = new BoatProblem(new Random(), 100, 100, 100, items.toArray(new Item[numItems]));
+
+		    SimulatedAnnealing<ValueObject> sa = new SimulatedAnnealing<ValueObject>(numItems / 5, numItems * numItems * 10, 1000, bp);
 
 		    long startTime = new Date().getTime();
 		    for(int i = 0; i < 1; i++)
@@ -34,10 +40,14 @@ public class Main {
 
 
 			    System.out.println("RESULTS");
-			    System.out.println(solution.value.value);
-			    System.out.println(solution.value.cost);
+			    System.out.println("Res: " + bp.evaluate(solution));
+
+
 			    System.out.println(solution.value.volume);
 			    System.out.println(solution.value.weight);
+			    System.out.println(solution.value.cost);
+			    System.out.println(solution.value.value);
+
 			    System.out.println(solution.data);
 		    }
 

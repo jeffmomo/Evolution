@@ -7,20 +7,30 @@ public class SimulatedAnnealing<T>
 {
 	private float _temp;
 
-	private int _maxTime;
+	private long _maxTime;
 	private float _maxTemp;
 	private int _numSamples;
 	private int _initSamples;
 
+	private long _initTime;
+
+	private float _stage;
+	private float _curr;
+
 	private Problem<T> _problem;
 
-	public SimulatedAnnealing(float maxTemp, int numSamples, int initialSamples, int maxTime, Problem<T> problem)
+	public SimulatedAnnealing(float maxTemp, int initialSamples, long maxTimeMilli, Problem<T> problem)
 	{
 		_maxTemp = maxTemp;
-		_maxTime = maxTime;
-		_numSamples = numSamples;
+		_maxTime = maxTimeMilli * 1000000;
 		_problem = problem;
-		_initSamples = initialSamples;
+		_initSamples = 100;
+		_initTime = System.nanoTime();
+
+		_stage = 1;
+		_curr = _maxTime / 10f;//(int)maxTemp;
+
+		_numSamples = initialSamples;
 	}
 
 	// Runs the heuristic
@@ -35,13 +45,11 @@ public class SimulatedAnnealing<T>
 		double bestResult = _problem.evaluate(sample);
 
 		// Repeat until the temperature is zero
-		while(_temp > 0)
+		while(_temp > 1)
 		{
-			// Generate a certain number of samples and store one if its better than the current best result
-			for(int i = 0; i < _numSamples; i++)
-			{
+			
 				// Permutes the problem _temp times
-				T test = _problem.permute(sample, (int)(_temp+1));
+				T test = _problem.permute(sample, (int)(_temp));
 
 				// Evaluates the permuted problem
 				double eval = _problem.evaluate(test);
@@ -52,14 +60,31 @@ public class SimulatedAnnealing<T>
 					bestResult = eval;
 					sample = test;
 				}
-			}
 
-			System.out.println("Best Result at Temp = " + _temp + " is: " + bestResult);
-			// Set the temp to the next
-			_temp = _problem.tempFunction(_temp);
+				// Check if time is running out
+				if((System.nanoTime() - _initTime) >= _curr)
+				{
+
+					//_stage += 1;
+//					if(_stage > _maxTemp)
+//					{
+//						return sample;
+//					}
+
+					_curr += ((_maxTime - _curr) / 10) + 1;
+
+					_temp -= (_temp) / 5f ;
+					//_initTime += _stage;
+					//_temp--; //_problem.tempFunction(_temp);
+					//_temp = _problem.tempFunction(_temp);
+					System.out.println("Best Result at Temp = " + _temp + " is: " + bestResult);
+					//return sample;
+				}
 
 		}
 
+
+		System.err.println((System.nanoTime() - _initTime) / 1000000);
 		// Returns the best sample generated
 		return sample;
 	}

@@ -3,12 +3,12 @@
  */
 public class Item
 {
-	public double value = 0;
-	public double volume = 0;
-	public double weight = 0;
-	public double cost = 0;
+	public float value = 0;
+	public float volume = 0;
+	public float weight = 0;
+	public float cost = 0;
 
-	public Item(double volume, double weight, double cost, double value)
+	public Item(float volume, float weight, float cost, float value)
 	{
 		this.value = value;
 		this.volume = volume;

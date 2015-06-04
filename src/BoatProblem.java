@@ -43,7 +43,7 @@ public class BoatProblem implements Problem<ValueObject>
 			if(!oldWasSelected)
 			{
 				// If adding on an item, check if its valid to add it
-				if(!(permutedItem.cost + item.cost > _maxCost || permutedItem.volume + item.volume > _maxVol || permutedItem.weight + item.weight > _maxWeight))
+				if(!(permutedItem.volume + item.volume > _maxVol || permutedItem.weight + item.weight > _maxWeight))
 				{
 					// If valid permutation, then flip the bit and add the item to cumulative item
 					ValueObject.flipAt(permuted, changeAt);
@@ -84,7 +84,7 @@ public class BoatProblem implements Problem<ValueObject>
 			{
 				Item item = _factors[i];
 				// Checks the validity of including the item at i
-				if(outItem.cost + item.cost <= _maxCost && outItem.weight + item.weight <= _maxWeight && outItem.volume + item.volume <= _maxVol)
+				if(outItem.weight + item.weight <= _maxWeight && outItem.volume + item.volume <= _maxVol)
 				{
 					// If valid then add item to cumulative
 					outItem.cost += item.cost;
@@ -106,14 +106,14 @@ public class BoatProblem implements Problem<ValueObject>
 	// Just returns the resell value of the cumulative items
 	public double evaluate(ValueObject itemSet)
 	{
-		return itemSet.value.value;
+		return itemSet.value.value - itemSet.value.cost;
 	}
 
 	// Temperature function
 	public float tempFunction(float temp)
 	{
 		//return temp - 1;
-		return temp / 1.5f  - 0.1f;
+		return temp / 1.5f  - 1f;
 	}
 
 

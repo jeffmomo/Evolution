@@ -12,7 +12,4 @@ public interface Problem<T>
 	public double evaluate(T in);
 	// The minimum solution possible
 	public T minimum();
-	// Returns the next temperature, given the current temperature
-	public float tempFunction(float temp);
-
 }

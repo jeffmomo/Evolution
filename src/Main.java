@@ -2,22 +2,38 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class Main {
 
     public static void main(String[] args)
     {
+
+	    double maxWeight, maxVol, maxCost;
+	    int maxTimeSeconds;
+	    String inputFile;
+
+	    if(args.length == 5)
+	    {
+		    maxVol = Double.parseDouble(args[0]);
+		    maxWeight = Double.parseDouble(args[1]);
+		    maxCost = Double.parseDouble(args[2]);
+		    maxTimeSeconds = Integer.parseInt(args[3]);
+		    inputFile = args[4];
+	    }
+	    else
+	    {
+		    System.err.println("Incorrect number of arguments");
+		    return;
+	    }
+
+
 	    try
 	    {
-		    File f = new File("C:/Users/Jeff/IdeaProjects/Evolution/src/test");
+		    File f = new File(inputFile);
 
 		    BufferedReader br = new BufferedReader(new FileReader(f));
 
-		    //Item[] items = new Item[numItems];
 		    List<Item> items = new LinkedList<Item>();
 		    String temp;
 		    while((temp = br.readLine()) != null)
@@ -29,25 +45,21 @@ public class Main {
 		    int numItems = items.size();
 
 
-		    BoatProblem bp = new BoatProblem(new Random(), 50, 50, 50, items.toArray(new Item[numItems]));
+		    BoatProblem2 bp = new BoatProblem2(new Random(), maxVol, maxWeight, maxCost, items.toArray(new Item[numItems]));
 
-		    SimulatedAnnealing<ValueObject> sa = new SimulatedAnnealing<ValueObject>(numItems / 3, 1000, 100000, bp);
+		    SimulatedAnnealing<ValueObject> sa = new SimulatedAnnealing<ValueObject>(numItems / 1, 1000, maxTimeSeconds * 1000, bp);
 
 		    long startTime = new Date().getTime();
 
 		    ValueObject solution = sa.run();
 
-
 		    System.err.println("RESULTS");
 		    System.err.println("Res: " + bp.evaluate(solution));
-
 
 		    System.err.println(solution.value.volume);
 		    System.err.println(solution.value.weight);
 		    System.err.println(solution.value.cost);
 		    System.err.println(solution.value.value);
-
-		    //System.out.println(solution.data);
 
 		    long endTime = new Date().getTime();
 
@@ -55,11 +67,11 @@ public class Main {
 
 		    System.err.println("Total time cost: " + timeCost);
 
-//		    for(int g = 0; g < numItems; g++)
-//		    {
-//			    if(ValueObject.bitAt(solution.data, g))
-//				    System.out.println(g + 1);
-//		    }
+		    for(int g = 0; g < numItems; g++)
+		    {
+			    if(ValueObject.bitAt(solution.data, g))
+				    System.out.println(g + 1);
+		    }
 
 	    }
 	    catch(IOException e)

@@ -3,7 +3,7 @@ import java.util.Random;
 /**
  * Created by Jeff on 29/05/2015.
  */
-public class BoatProblem implements Problem<ValueObject>
+public class BoatProblem2 implements Problem<ValueObject>
 {
 	private Item[] _factors;
 	private Random _randomiser;
@@ -12,7 +12,7 @@ public class BoatProblem implements Problem<ValueObject>
 	private double _maxWeight;
 	private double _maxCost;
 
-	public BoatProblem(Random randomiser, double maxVol, double maxWeight, double maxCost, Item[] factors)
+	public BoatProblem2(Random randomiser, double maxVol, double maxWeight, double maxCost, Item[] factors)
 	{
 		_factors = factors;
 		_randomiser = randomiser;
@@ -25,41 +25,17 @@ public class BoatProblem implements Problem<ValueObject>
 	// Permutes the ValueObject a number of times
 	public ValueObject permute(ValueObject permutantObj, int passes)
 	{
-		byte[] permutant = permutantObj.data;
-		byte[] permuted = permutant.clone();
-		Item permutedItem = permutantObj.value.clone();
+		byte[] permuted = permutantObj.data.clone();
 
 		// Permutes it
 		for(int i = 0; i < passes; i++)
 		{
 			// Gets a random location to flip bits
 			int changeAt = _randomiser.nextInt(_factors.length);
-			// Gets the bit at that location
-			boolean oldWasSelected = ValueObject.bitAt(permuted, changeAt);
-			// Gets the item corresponding to that location
-			Item item = _factors[changeAt];
-
-			// Depending on if item was added or removed (if bit flipped to on or off)
-			if(!oldWasSelected)
-			{
-				// If adding on an item, check if its valid to add it
-				if(!(permutedItem.volume + item.volume > _maxVol || permutedItem.weight + item.weight > _maxWeight || permutedItem.cost + item.cost > _maxCost))
-				{
-					// If valid permutation, then flip the bit and add the item to cumulative item
-					ValueObject.flipAt(permuted, changeAt);
-					permutedItem.add(item);
-				}
-				// Else do nothing for this pass
-			}
-			else
-			{
-				// If removing an item then just flip the bit and remove item from cumulative item
-				ValueObject.flipAt(permuted, changeAt);
-				permutedItem.subtract(item);
-			}
+			ValueObject.flipAt(permuted, changeAt);
 		}
 
-		return new ValueObject(permuted, permutedItem);
+		return new ValueObject(permuted, permutantObj.value);
 	}
 
 	// Returns the minimum possible sample
@@ -68,7 +44,7 @@ public class BoatProblem implements Problem<ValueObject>
 		return new ValueObject(new byte[_factors.length / 8 + 1], new Item());
 	}
 
-	// Generates a random sample
+
 	public ValueObject generate()
 	{
 		// Creates a new bytearray
@@ -84,7 +60,7 @@ public class BoatProblem implements Problem<ValueObject>
 			{
 				Item item = _factors[i];
 				// Checks the validity of including the item at i
-				if(outItem.weight + item.weight <= _maxWeight && outItem.volume + item.volume <= _maxVol && outItem.cost + item.cost <= _maxCost)
+				if(outItem.weight + item.weight <= _maxWeight && outItem.volume + item.volume <= _maxVol)
 				{
 					// If valid then add item to cumulative
 					outItem.cost += item.cost;
@@ -106,7 +82,27 @@ public class BoatProblem implements Problem<ValueObject>
 	// Just returns the resell value of the cumulative items
 	public double evaluate(ValueObject itemSet)
 	{
-		return itemSet.value.value - itemSet.value.cost;
+		Item outItem = new Item();
+		byte[] dataset = itemSet.data;
+
+		for(int i = 0; i < _factors.length; i++)
+		{
+			if(ValueObject.bitAt(dataset, i))
+			{
+				Item item = _factors[i];
+
+				outItem.cost += item.cost;
+				outItem.value += item.value;
+				outItem.weight += item.weight;
+				outItem.volume += item.volume;
+
+				if(outItem.weight > _maxWeight || outItem.volume > _maxVol)
+					return -1;
+			}
+
+		}
+
+		return outItem.value - outItem.cost;
 	}
 
 }

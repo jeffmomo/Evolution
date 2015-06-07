@@ -5,7 +5,7 @@ public class SimulatedAnnealing<T>
 {
 	private float _temp;
 
-	private float _maxTemp;
+	private int _maxTemp;
 	private int _initSamples;
 
 	private long _currentTime;
@@ -13,7 +13,7 @@ public class SimulatedAnnealing<T>
 
 	private Problem<T> _problem;
 
-	public SimulatedAnnealing(float maxTemp, int initialSamples, long maxTimeMilli, Problem<T> problem)
+	public SimulatedAnnealing(int maxTemp, int initialSamples, long maxTimeMilli, Problem<T> problem)
 	{
 		_maxTemp = maxTemp;
 		_problem = problem;

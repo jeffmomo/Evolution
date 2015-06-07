@@ -45,33 +45,34 @@ public class Main {
 		    int numItems = items.size();
 
 
-		    BoatProblem2 bp = new BoatProblem2(new Random(), maxVol, maxWeight, maxCost, items.toArray(new Item[numItems]));
+		    BoatProblem bp = new BoatProblem(new Random(), maxVol, maxWeight, maxCost, items.toArray(new Item[numItems]));
 
-		    SimulatedAnnealing<ValueObject> sa = new SimulatedAnnealing<ValueObject>(numItems / 1, 1000, maxTimeSeconds * 1000, bp);
+		    SimulatedAnnealing<ValueObject> sa = new SimulatedAnnealing<ValueObject>(numItems / 5, 10000, maxTimeSeconds * 1000, bp);
 
 		    long startTime = new Date().getTime();
 
 		    ValueObject solution = sa.run();
 
-		    System.err.println("RESULTS");
-		    System.err.println("Res: " + bp.evaluate(solution));
-
-		    System.err.println(solution.value.volume);
-		    System.err.println(solution.value.weight);
-		    System.err.println(solution.value.cost);
-		    System.err.println(solution.value.value);
-
-		    long endTime = new Date().getTime();
-
-		    double timeCost = (double)(endTime - startTime) / 1000;
-
-		    System.err.println("Total time cost: " + timeCost);
+//		    System.err.println("RESULTS");
+//
+//		    System.err.println(solution.value.volume);
+//		    System.err.println(solution.value.weight);
+//		    System.err.println(solution.value.cost);
+//		    System.err.println(solution.value.value);
+//
+//		    long endTime = new Date().getTime();
+//
+//		    double timeCost = (double)(endTime - startTime) / 1000;
+//
+//		    System.err.println("Total time cost: " + timeCost);
 
 		    for(int g = 0; g < numItems; g++)
 		    {
 			    if(ValueObject.bitAt(solution.data, g))
 				    System.out.println(g + 1);
 		    }
+
+		    //System.err.println("Res: " + bp.evaluate(solution));
 
 	    }
 	    catch(IOException e)

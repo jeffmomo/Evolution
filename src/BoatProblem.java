@@ -76,9 +76,14 @@ public class BoatProblem implements Problem<ValueObject>
 		// Creates a new item to represent the cumulative
 		Item outItem = new Item();
 
+		RandomIntHeap randomIntHeap = new RandomIntHeap(_factors.length, _randomiser);
+
 		// Loops through the number of items in set
-		for(int i = 0; i < _factors.length; i++)
+		while(!randomIntHeap.isEmpty())
 		{
+			// Gets the next random location to flip
+			int i = randomIntHeap.getNext();
+
 			// If random boolean is true then set the bit to true - but only if its valid
 			if(_randomiser.nextBoolean())
 			{

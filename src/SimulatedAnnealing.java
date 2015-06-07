@@ -62,7 +62,7 @@ public class SimulatedAnnealing<T>
 					_temp--;
 					_currentTime += _temp * _timeFactor;
 
-					System.err.println("Best Result at Temp = " + _temp + " is: " + bestResult);
+					//System.err.println("Best Result at Temp = " + _temp + " is: " + bestResult);
 				}
 
 		}

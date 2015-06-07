@@ -31,21 +31,21 @@ public class Main {
 
 		    BoatProblem bp = new BoatProblem(new Random(), 50, 50, 50, items.toArray(new Item[numItems]));
 
-		    SimulatedAnnealing<ValueObject> sa = new SimulatedAnnealing<ValueObject>(numItems / 5, 1000, 10000, bp);
+		    SimulatedAnnealing<ValueObject> sa = new SimulatedAnnealing<ValueObject>(numItems / 3, 1000, 100000, bp);
 
 		    long startTime = new Date().getTime();
 
 		    ValueObject solution = sa.run();
 
 
-		    System.out.println("RESULTS");
-		    System.out.println("Res: " + bp.evaluate(solution));
+		    System.err.println("RESULTS");
+		    System.err.println("Res: " + bp.evaluate(solution));
 
 
-		    System.out.println(solution.value.volume);
-		    System.out.println(solution.value.weight);
-		    System.out.println(solution.value.cost);
-		    System.out.println(solution.value.value);
+		    System.err.println(solution.value.volume);
+		    System.err.println(solution.value.weight);
+		    System.err.println(solution.value.cost);
+		    System.err.println(solution.value.value);
 
 		    //System.out.println(solution.data);
 
@@ -53,7 +53,7 @@ public class Main {
 
 		    double timeCost = (double)(endTime - startTime) / 1000;
 
-		    System.out.println("Total time cost: " + timeCost);
+		    System.err.println("Total time cost: " + timeCost);
 
 //		    for(int g = 0; g < numItems; g++)
 //		    {

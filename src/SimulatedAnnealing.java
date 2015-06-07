@@ -3,31 +3,29 @@
  */
 public class SimulatedAnnealing<T>
 {
-	private float _timeFactor = 20f;
-
 	private float _temp;
 
-	private long _maxTime;
 	private float _maxTemp;
 	private int _initSamples;
 
 	private long _currentTime;
-
-	private float _initTime;
+	private double _timeFactor;
 
 	private Problem<T> _problem;
 
 	public SimulatedAnnealing(float maxTemp, int initialSamples, long maxTimeMilli, Problem<T> problem)
 	{
 		_maxTemp = maxTemp;
-		_maxTime = maxTimeMilli * 1000000;
 		_problem = problem;
 		_initSamples = initialSamples;
 		_currentTime = System.nanoTime();
-		_initTime = _currentTime;
-		_timeFactor = 0.02f * (float)Math.sqrt(maxTimeMilli * maxTemp);
 
-		_currentTime += _maxTime / _timeFactor;
+		// Calculates a time factor based on the fact that it takes a longer time per sample at high temperatures
+		// Uses the formula x(x + 1) / 2, and matches it up against the max time
+		_timeFactor = (maxTimeMilli * 1000000) / ((maxTemp * maxTemp + maxTemp) / 2);
+
+		// Adds the time for the first temp pass
+		_currentTime += _timeFactor * maxTemp;
 	}
 
 	// Runs the heuristic
@@ -53,23 +51,21 @@ public class SimulatedAnnealing<T>
 				// And if its better than the best, then store it
 				if(eval > bestResult)
 				{
-					System.err.println(eval - bestResult);
 					bestResult = eval;
 					sample = test;
 				}
 
 				// Recalculate temperature when a certain time limit is reached
-				if((System.nanoTime() - _currentTime) >= 0)
+				if(System.nanoTime() >= _currentTime)
 				{
 					// Non-linear time allocation for each temp - this is to counteract the fact that permutation takes more time when temp is high
-					_currentTime += ((_maxTime - (_currentTime - _initTime)) / _timeFactor);
 					_temp--;
+					_currentTime += _temp * _timeFactor;
 
-					System.out.println("Best Result at Temp = " + _temp + " is: " + bestResult);
+					System.err.println("Best Result at Temp = " + _temp + " is: " + bestResult);
 				}
 
 		}
-
 		// Returns the best sample generated
 		return sample;
 	}

@@ -9,7 +9,7 @@ public interface Problem<T>
 	// Generates a solution
 	public T generate();
 	// Evalutates the solution to a quantifiable value
-	public double evaluate(T in);
+	public int evaluate(T in);
 	// The minimum solution possible
 	public T minimum();
 }

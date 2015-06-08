@@ -1,3 +1,5 @@
+import sun.dc.pr.PRError;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -6,18 +8,21 @@ import java.util.*;
 
 public class Main {
 
+	private static double PRECISION = 1000;
+
+
     public static void main(String[] args)
     {
 
-	    double maxWeight, maxVol, maxCost;
+	    int maxWeight, maxVol, maxCost;
 	    int maxTimeSeconds;
 	    String inputFile;
 
 	    if(args.length == 5)
 	    {
-		    maxVol = Double.parseDouble(args[0]);
-		    maxWeight = Double.parseDouble(args[1]);
-		    maxCost = Double.parseDouble(args[2]);
+		    maxVol = (int)((Double.parseDouble(args[0]) * PRECISION));
+		    maxWeight = (int)((Double.parseDouble(args[1]) * PRECISION));
+		    maxCost = (int)((Double.parseDouble(args[2]) * PRECISION));
 		    maxTimeSeconds = Integer.parseInt(args[3]);
 		    inputFile = args[4];
 	    }
@@ -26,7 +31,6 @@ public class Main {
 		    System.err.println("Incorrect number of arguments");
 		    return;
 	    }
-
 
 	    try
 	    {
@@ -39,7 +43,7 @@ public class Main {
 		    while((temp = br.readLine()) != null)
 		    {
 			    String[] split = temp.split(" ");
-			    items.add(new Item(Float.parseFloat(split[0]), Float.parseFloat(split[1]), Float.parseFloat(split[2]), Float.parseFloat(split[3])));
+			    items.add(new Item((int)(Double.parseDouble(split[0]) * PRECISION), (int)(Double.parseDouble(split[1]) * PRECISION),(int)(Double.parseDouble(split[2]) * PRECISION), (int)(Double.parseDouble(split[3]) * PRECISION)));
 		    }
 
 		    int numItems = items.size();
@@ -47,7 +51,7 @@ public class Main {
 
 		    BoatProblem bp = new BoatProblem(new Random(), maxVol, maxWeight, maxCost, items.toArray(new Item[numItems]));
 
-		    SimulatedAnnealing<ValueObject> sa = new SimulatedAnnealing<ValueObject>(numItems / 5, 10000, maxTimeSeconds * 1000, bp);
+		    SimulatedAnnealing<ValueObject> sa = new SimulatedAnnealing<ValueObject>(numItems / 3, 10000, maxTimeSeconds * 1000, bp);
 
 		    long startTime = new Date().getTime();
 
@@ -72,7 +76,7 @@ public class Main {
 				    System.out.println(g + 1);
 		    }
 
-		    //System.err.println("Res: " + bp.evaluate(solution));
+		    //System.err.println("Res: " + bp.evaluate(solution) / PRECISION);
 
 	    }
 	    catch(IOException e)

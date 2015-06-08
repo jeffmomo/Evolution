@@ -8,11 +8,11 @@ public class BoatProblem implements Problem<ValueObject>
 	private Item[] _factors;
 	private Random _randomiser;
 
-	private double _maxVol;
-	private double _maxWeight;
-	private double _maxCost;
+	private int _maxVol;
+	private int _maxWeight;
+	private int _maxCost;
 
-	public BoatProblem(Random randomiser, double maxVol, double maxWeight, double maxCost, Item[] factors)
+	public BoatProblem(Random randomiser, int maxVol, int maxWeight, int maxCost, Item[] factors)
 	{
 		_factors = factors;
 		_randomiser = randomiser;
@@ -109,7 +109,7 @@ public class BoatProblem implements Problem<ValueObject>
 	}
 
 	// Just returns the resell value of the cumulative items
-	public double evaluate(ValueObject itemSet)
+	public int evaluate(ValueObject itemSet)
 	{
 		return itemSet.value.value - itemSet.value.cost;
 	}
